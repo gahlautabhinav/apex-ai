@@ -1,0 +1,7 @@
+declare lower;
+input length = 14;
+plot RSILine = RSI(length);
+plot OverBought = 70;
+plot OverSold = 30;
+OverBought.SetDefaultColor(Color.RED);
+OverSold.SetDefaultColor(Color.GREEN);

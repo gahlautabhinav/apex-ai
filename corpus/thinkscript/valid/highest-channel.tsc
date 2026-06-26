@@ -1,0 +1,5 @@
+input length = 20;
+plot Hi = Highest(high, length);
+plot Lo = Lowest(low, length);
+Hi.SetDefaultColor(Color.GREEN);
+Lo.SetDefaultColor(Color.RED);

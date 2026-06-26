@@ -1,0 +1,6 @@
+input fast = 9;
+input slow = 21;
+def emaFast = ExpAverage(close, fast);
+def emaSlow = ExpAverage(close, slow);
+plot CrossUp = Crosses(emaFast, emaSlow, CrossingDirection.ABOVE);
+CrossUp.SetPaintingStrategy(PaintingStrategy.BOOLEAN_ARROW_UP);

@@ -1,0 +1,3 @@
+input length = 14;
+def a = ATR(length);
+AddLabel(yes, "ATR: " + Round(a, 2), Color.WHITE);
