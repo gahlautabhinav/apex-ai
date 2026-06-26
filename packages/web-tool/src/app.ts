@@ -27,6 +27,10 @@ export function createApp(deps: AppDeps): Server {
         return;
       }
 
+      req.on("error", () => {
+        // swallow post-destroy / socket errors so they don't crash the process
+      });
+
       let body = "";
       let aborted = false;
       req.on("data", (chunk: Buffer) => {

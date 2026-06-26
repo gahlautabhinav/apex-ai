@@ -31,6 +31,13 @@ describe("web-tool app", () => {
     expect(await res.text()).toContain("APEX");
   });
 
+  it("serves the HTML page at /index.html too", async () => {
+    const base = await start();
+    const res = await fetch(base + "/index.html");
+    expect(res.status).toBe(200);
+    expect(res.headers.get("content-type")).toContain("text/html");
+  });
+
   it("generates ThinkScript via POST /api/generate", async () => {
     const base = await start();
     const res = await fetch(base + "/api/generate", {
