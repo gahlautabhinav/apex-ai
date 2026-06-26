@@ -19,7 +19,7 @@ const res = validate("plot SMA = Average(close, 20);");
 | Code  | Severity | Meaning |
 |-------|----------|---------|
 | TS001 | error    | Unbalanced / mismatched `()` or `[]` |
-| TS002 | error    | Curly braces (invalid in ThinkScript) |
+| TS002 | error    | Curly braces — treated as an error (the simple-study/scanner wedge does not use them; advanced inline `script { ... }` definitions are not yet supported) |
 | TS003 | error    | Unterminated string literal |
 | TS004 | error    | Reserved word used as a declaration name |
 | TS005 | error    | Declaration (`def`/`plot`/`input`/`rec`) with no name |
