@@ -31,6 +31,10 @@ export function createApp(deps: AppDeps): Server {
         // swallow post-destroy / socket errors so they don't crash the process
       });
 
+      res.on("error", () => {
+        // swallow late socket errors on the response (client disconnect mid-write)
+      });
+
       let body = "";
       let aborted = false;
       req.on("data", (chunk: Buffer) => {

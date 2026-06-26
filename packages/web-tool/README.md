@@ -37,6 +37,10 @@ limits and isn't what a personal plan is for: at launch, back the public tool
 with a dedicated API key + abuse protection, or gate it behind "bring your own
 Claude". The rate limiter here is the first guard, not the whole answer.
 
+- **Per-request fan-out:** each allowed POST can spawn `claude` up to 3 times (the self-correction loop retries invalid output), so "10/min/IP" is up to ~30 `claude` spawns/min/IP worst-case.
+- **No global cap:** there is no global concurrency/in-flight limit — N distinct IPs can spawn N×3 concurrent `claude` subprocesses. A public deployment needs a global semaphore (503 past a ceiling).
+- **Limiter is in-memory:** the per-IP map clears on restart and keys on the socket address (so it collapses behind a reverse proxy). Use a shared/durable limiter + trusted client-IP source for real public exposure.
+
 ## Build
 
 ```bash
