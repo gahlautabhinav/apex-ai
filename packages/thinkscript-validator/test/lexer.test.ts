@@ -20,6 +20,11 @@ describe("tokenize", () => {
     expect(s.terminated).toBe(false);
   });
 
+  it("flags an unterminated string at end of file", () => {
+    const s = tokenize('"hi')[0];
+    expect(s.terminated).toBe(false);
+  });
+
   it("tokenizes a declaration statement", () => {
     const toks = tokenize("plot SMA = Average(close, 20);").filter((t) => t.kind !== "eof");
     expect(toks.map((t) => t.value)).toEqual([
