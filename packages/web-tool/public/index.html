@@ -76,11 +76,13 @@
       </div>
 
       <div id="result" class="hidden">
-        <div class="blockhead">
-          <h2>ThinkScript</h2>
-          <button id="copy">Copy</button>
+        <div id="codeSection">
+          <div class="blockhead">
+            <h2>ThinkScript</h2>
+            <button id="copy">Copy</button>
+          </div>
+          <pre id="code"></pre>
         </div>
-        <pre id="code"></pre>
         <div class="blockhead"><h2>Explanation</h2></div>
         <p id="explain" class="explain"></p>
       </div>
@@ -115,10 +117,15 @@
             status.textContent = data.error || ("error " + res.status);
             return;
           }
-          codeEl.textContent = data.code || "(no code returned)";
+          const isExplain = data.mode === "explain";
+          document.getElementById("codeSection").style.display = isExplain ? "none" : "";
+          codeEl.textContent = data.code || "";
           explainEl.textContent = data.explanation || "";
           result.classList.remove("hidden");
-          if (!data.producedCode) {
+          if (isExplain) {
+            status.className = "status ok";
+            status.textContent = "explanation ready · review before use";
+          } else if (!data.producedCode) {
             status.className = "status err";
             status.textContent = "no code block returned — try rephrasing";
           } else if (data.ok) {

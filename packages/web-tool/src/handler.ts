@@ -12,7 +12,7 @@ export interface HandlerResult {
   body: unknown;
 }
 
-const MAX_INPUT = 2000;
+const MAX_INPUT = 8000;
 const MODES = ["generate", "explain", "debug", "refactor", "scan"] as const;
 type Mode = (typeof MODES)[number];
 
