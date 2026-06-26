@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { ClaudeCliClient, type CommandRunner } from "../src";
 import type { LlmRequest } from "@apex/ai-thinkscript";
 
@@ -61,5 +61,33 @@ describe("ClaudeCliClient", () => {
       exitCode: 0,
     });
     await expect(new ClaudeCliClient({ run }).complete(req())).rejects.toThrow(/nope/);
+  });
+
+  it("warns when ANTHROPIC_API_KEY is set and no runner is injected", () => {
+    const prev = process.env.ANTHROPIC_API_KEY;
+    process.env.ANTHROPIC_API_KEY = "sk-test";
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      new ClaudeCliClient();
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("ANTHROPIC_API_KEY"));
+    } finally {
+      warn.mockRestore();
+      if (prev === undefined) delete process.env.ANTHROPIC_API_KEY;
+      else process.env.ANTHROPIC_API_KEY = prev;
+    }
+  });
+
+  it("does not warn when a runner is injected", () => {
+    const prev = process.env.ANTHROPIC_API_KEY;
+    process.env.ANTHROPIC_API_KEY = "sk-test";
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      new ClaudeCliClient({ run: async () => ({ stdout: "", stderr: "", exitCode: 0 }) });
+      expect(warn).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+      if (prev === undefined) delete process.env.ANTHROPIC_API_KEY;
+      else process.env.ANTHROPIC_API_KEY = prev;
+    }
   });
 });

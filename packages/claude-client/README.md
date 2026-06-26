@@ -51,6 +51,8 @@ APEX_LIVE=1 npm test -- claude-cli-client.live   # real claude, real subscriptio
 - `--model` aliases resolve to the *latest* of each family, which may drift from the exact APEX model id.
 - Haiku availability depends on the subscription tier; if `haiku` is unavailable, fall back to `sonnet`.
 - **Licensing:** using a personal subscription for your own use is fine; bundling it into a product sold to others is not — ship "bring your own Claude Code" so each user authenticates their own CLI.
+- **Windows install:** requires the native Claude Code installer (so `claude` is an executable on PATH). An npm-global install creates `claude.cmd`, which this no-shell spawn cannot launch — point `command:` at the real binary or use the native installer.
+- Each `complete()` call spawns a fresh `claude` (~20s) and times out at 120s; the self-correction loop can make up to 3 such calls. A web/UI consumer should use async/progress UX.
 
 ## Build
 

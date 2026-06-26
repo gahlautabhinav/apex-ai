@@ -41,4 +41,7 @@ describe("extractResult", () => {
   it("throws when result is missing", () => {
     expect(() => extractResult(JSON.stringify({ type: "result" }))).toThrow(/result/);
   });
+  it("throws on bare null JSON", () => {
+    expect(() => extractResult("null")).toThrow(/non-object/);
+  });
 });

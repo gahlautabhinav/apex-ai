@@ -28,6 +28,9 @@ export function extractResult(stdout: string): string {
   } catch {
     throw new Error(`claude CLI returned non-JSON output: ${stdout.slice(0, 200)}`);
   }
+  if (typeof parsed !== "object" || parsed === null) {
+    throw new Error(`claude CLI returned non-object JSON: ${stdout.slice(0, 200)}`);
+  }
   const obj = parsed as Record<string, unknown>;
   if (obj.is_error === true) {
     const msg = typeof obj.result === "string" ? obj.result : JSON.stringify(obj);
