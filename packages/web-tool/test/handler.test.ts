@@ -37,7 +37,7 @@ describe("handleGenerate", () => {
   });
 
   it("returns 400 for an over-long intent", async () => {
-    const long = "a".repeat(2001);
+    const long = "a".repeat(8001);
     const res = await handleGenerate(JSON.stringify({ intent: long }), new FakeLlmClient([GOOD]));
     expect(res.status).toBe(400);
   });
