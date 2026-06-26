@@ -1,0 +1,2 @@
+# A label whose text contains delimiter characters inside a string literal
+AddLabel(yes, "H [hi] (lo) {x} #1", Color.WHITE);
