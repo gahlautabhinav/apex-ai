@@ -16,8 +16,7 @@ export interface GenerateResult {
   explanation: string;
   validation: ValidationResult;
   // A non-empty fenced code block was actually returned. Check this BEFORE
-  // trusting validation.ok — the validator reports ok:true on prose too, so a
-  // refusal/empty reply would otherwise look "valid".
+  // trusting validation.ok — the validator reports ok:true on prose too.
   producedCode: boolean;
   attempts: number;
   reviewRequired: true; // always — generated code is never presented as verified
@@ -43,15 +42,23 @@ function nextCorrection(parsed: ParsedResponse, validation: ValidationResult): s
   return correctionPrompt(validation);
 }
 
-export async function generateThinkScript(
-  intent: string,
+// Clamp maxAttempts to a finite integer >= 1 (non-finite -> default 3).
+export function clampAttempts(maxAttempts?: number): number {
+  const requested = maxAttempts ?? 3;
+  return Number.isFinite(requested) ? Math.max(1, Math.trunc(requested)) : 3;
+}
+
+// The shared self-correction loop used by every code-producing surface:
+// call the model, parse the fenced code, validate it, and on failure feed the
+// errors back and retry, bounded by maxAttempts. Never throws on bad output.
+export async function runGenerationLoop(
+  system: string,
+  initialUserMessage: string,
   client: LlmClient,
-  options: GenerateOptions = {},
+  model: string,
+  maxAttempts: number,
 ): Promise<GenerateResult> {
-  const requested = options.maxAttempts ?? 3;
-  const maxAttempts = Number.isFinite(requested) ? Math.max(1, Math.trunc(requested)) : 3;
-  const model = options.model ?? routeModel("generate");
-  const messages: LlmMessage[] = [{ role: "user", content: intent }];
+  const messages: LlmMessage[] = [{ role: "user", content: initialUserMessage }];
 
   let parsed: ParsedResponse = { code: "", explanation: "", hadFence: false };
   let validation: ValidationResult = { ok: false, errors: [], warnings: [] };
@@ -59,8 +66,8 @@ export async function generateThinkScript(
 
   while (attempts < maxAttempts) {
     const text = await client.complete({
-      system: THINKSCRIPT_GENERATE_SYSTEM,
-      messages: [...messages], // snapshot: a recording/real client sees the state at call time
+      system,
+      messages: [...messages], // snapshot: a recording/real client sees state at call time
       model,
     });
     attempts++;
@@ -68,7 +75,6 @@ export async function generateThinkScript(
     validation = validate(parsed.code);
     if (validation.ok && hasCode(parsed)) break;
 
-    // Self-correct: keep the reply in context and ask for a fix / a real code block.
     messages.push({ role: "assistant", content: text });
     messages.push({ role: "user", content: nextCorrection(parsed, validation) });
   }
@@ -81,4 +87,18 @@ export async function generateThinkScript(
     attempts,
     reviewRequired: true,
   };
+}
+
+export async function generateThinkScript(
+  intent: string,
+  client: LlmClient,
+  options: GenerateOptions = {},
+): Promise<GenerateResult> {
+  return runGenerationLoop(
+    THINKSCRIPT_GENERATE_SYSTEM,
+    intent,
+    client,
+    options.model ?? routeModel("generate"),
+    clampAttempts(options.maxAttempts),
+  );
 }
