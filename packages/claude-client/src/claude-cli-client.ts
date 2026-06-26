@@ -15,10 +15,22 @@ export class ClaudeCliClient implements LlmClient {
   private readonly run: CommandRunner;
 
   constructor(options: ClaudeCliOptions = {}) {
-    this.run = options.run ?? spawnRunner(options.command ?? "claude");
+    if (options.run) {
+      this.run = options.run;
+    } else {
+      this.run = spawnRunner(options.command ?? "claude");
+      // The point is to run on the Claude Code subscription. If an API key is
+      // set, the CLI bills that key per token instead — warn loudly.
+      if (process.env.ANTHROPIC_API_KEY) {
+        console.warn(
+          "[apex] ANTHROPIC_API_KEY is set — the claude CLI will bill that API key per token instead of your Claude Code subscription. Unset it to use the subscription.",
+        );
+      }
+    }
   }
 
   async complete(req: LlmRequest): Promise<string> {
+    // req.maxTokens is intentionally not wired: `claude -p` has no clean per-call token cap.
     const args = [
       "-p",
       "--system-prompt",
