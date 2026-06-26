@@ -1,4 +1,4 @@
-export type TaskClass = "generate" | "explain" | "debug" | "refactor" | "refine";
+export type TaskClass = "generate" | "explain" | "debug" | "refactor" | "refine" | "scanner";
 
 // Exact model ids — no date suffixes. Complex reasoning/codegen -> Sonnet;
 // fast/cheap completions -> Haiku. Routing is the only place model ids live.
@@ -10,6 +10,7 @@ const ROUTING: Record<TaskClass, string> = {
   debug: COMPLEX_MODEL,
   refactor: COMPLEX_MODEL,
   refine: COMPLEX_MODEL,
+  scanner: COMPLEX_MODEL,
   explain: FAST_MODEL,
 };
 
