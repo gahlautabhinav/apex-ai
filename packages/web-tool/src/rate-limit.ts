@@ -12,6 +12,12 @@ export function fixedWindowLimiter(
   return {
     check(key: string): boolean {
       const t = now();
+      // ponytail: O(n) sweep only when the map is large; bounds growth from one-shot IPs without slowing normal traffic.
+      if (hits.size > 10_000) {
+        for (const [k, v] of hits) {
+          if (t >= v.resetAt) hits.delete(k);
+        }
+      }
       const entry = hits.get(key);
       if (!entry || t >= entry.resetAt) {
         hits.set(key, { count: 1, resetAt: t + windowMs });

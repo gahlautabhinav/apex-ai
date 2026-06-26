@@ -118,7 +118,7 @@
           } else {
             status.className = "status warn";
             const codes = (data.errors || []).map((e) => e.code).join(", ");
-            status.textContent = "validation warnings (" + codes + ") · review before use";
+            status.textContent = "validation errors (" + codes + ") · review before use";
           }
         } catch (e) {
           status.className = "status err";
