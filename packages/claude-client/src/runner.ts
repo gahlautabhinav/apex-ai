@@ -21,6 +21,10 @@ export function spawnRunner(command = "claude"): CommandRunner {
       child.stderr.on("data", (d: Buffer) => (stderr += d.toString()));
       child.once("error", reject);
       child.once("close", (code) => resolve({ stdout, stderr, exitCode: code ?? 0 }));
+      child.stdin.on("error", () => {
+        // swallow EPIPE: if the process exits before reading stdin, the `close`
+        // handler still fires with the exit code and complete() throws cleanly.
+      });
       child.stdin.end(stdin);
     });
 }
