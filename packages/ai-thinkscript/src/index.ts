@@ -8,6 +8,20 @@ export {
   THINKSCRIPT_GENERATE_SYSTEM,
   THINKSCRIPT_EXPLAIN_SYSTEM,
   THINKSCRIPT_DEBUG_SYSTEM,
+  THINKSCRIPT_REFACTOR_SYSTEM,
+  THINKSCRIPT_SCANNER_SYSTEM,
 } from "./prompts";
-export { generateThinkScript, correctionPrompt } from "./generate";
+export { generateThinkScript, correctionPrompt, runGenerationLoop, clampAttempts } from "./generate";
 export type { GenerateOptions, GenerateResult } from "./generate";
+export {
+  debugThinkScript,
+  refactorThinkScript,
+  generateScanner,
+  explainThinkScript,
+} from "./surfaces";
+export type {
+  DebugOptions,
+  RefactorOptions,
+  ExplainOptions,
+  ExplainResult,
+} from "./surfaces";
