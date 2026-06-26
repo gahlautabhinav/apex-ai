@@ -51,4 +51,38 @@ describe("handleGenerate", () => {
     const res = await handleGenerate("[1,2,3]", new FakeLlmClient([GOOD]));
     expect(res.status).toBe(400);
   });
+
+  it("explains code in explain mode (no code, returns explanation)", async () => {
+    const client = new FakeLlmClient(["It plots a 20-period SMA of the close."]);
+    const res = await handleGenerate(JSON.stringify({ mode: "explain", input: "plot SMA = Average(close, 20);" }), client);
+    expect(res.status).toBe(200);
+    const body = res.body as Record<string, unknown>;
+    expect(body.mode).toBe("explain");
+    expect(body.explanation).toContain("20-period SMA");
+    expect(body.producedCode).toBe(false);
+  });
+
+  it("debugs code in debug mode", async () => {
+    const client = new FakeLlmClient([GOOD]);
+    const res = await handleGenerate(JSON.stringify({ mode: "debug", input: "plot X = Average(close, 20;" }), client);
+    const body = res.body as Record<string, unknown>;
+    expect(body.mode).toBe("debug");
+    expect(body.producedCode).toBe(true);
+    expect(body.ok).toBe(true);
+  });
+
+  it("still accepts the legacy { intent } body as generate mode", async () => {
+    const client = new FakeLlmClient([GOOD]);
+    const res = await handleGenerate(JSON.stringify({ intent: "20 period sma" }), client);
+    const body = res.body as Record<string, unknown>;
+    expect(res.status).toBe(200);
+    expect(body.mode).toBe("generate");
+    expect(body.code).toBe("plot SMA = Average(close, 20);");
+  });
+
+  it("rejects an unknown mode by falling back to generate", async () => {
+    const client = new FakeLlmClient([GOOD]);
+    const res = await handleGenerate(JSON.stringify({ mode: "nonsense", input: "x" }), client);
+    expect((res.body as Record<string, unknown>).mode).toBe("generate");
+  });
 });

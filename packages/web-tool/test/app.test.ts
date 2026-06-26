@@ -80,4 +80,18 @@ describe("web-tool app", () => {
     const base = await start();
     expect((await fetch(base + "/nope")).status).toBe(404);
   });
+
+  it("dispatches explain mode over HTTP", async () => {
+    const base = await start();
+    const res = await fetch(base + "/api/generate", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ mode: "explain", input: "plot SMA = Average(close, 20);" }),
+    });
+    expect(res.status).toBe(200);
+    const json = (await res.json()) as Record<string, unknown>;
+    expect(json.mode).toBe("explain");
+    expect(typeof json.explanation).toBe("string");
+    expect((json.explanation as string).length).toBeGreaterThan(0);
+  });
 });

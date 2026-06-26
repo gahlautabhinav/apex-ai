@@ -58,6 +58,15 @@
         <p>Describe a study or scanner in plain English.</p>
       </header>
 
+      <label for="mode">Mode</label>
+      <select id="mode" style="background: var(--panel); border: 1px solid var(--border); border-radius: 4px; color: var(--hi); font-family: var(--ui); font-size: 14px; padding: 8px 10px;">
+        <option value="generate">Generate — English → ThinkScript</option>
+        <option value="scan">Scanner — English → scan code</option>
+        <option value="explain">Explain — what does this code do?</option>
+        <option value="debug">Debug — fix broken ThinkScript</option>
+        <option value="refactor">Refactor — clean up, keep behavior</option>
+      </select>
+
       <label for="intent">Intent</label>
       <textarea id="intent" placeholder="e.g. plot a 20-period simple moving average, colored green when price is above it"></textarea>
       <div class="row">
@@ -98,7 +107,7 @@
           const res = await fetch("/api/generate", {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ intent: text }),
+            body: JSON.stringify({ mode: document.getElementById("mode").value, input: text }),
           });
           const data = await res.json();
           if (!res.ok) {
@@ -133,6 +142,18 @@
         if ((e.ctrlKey || e.metaKey) && e.key === "Enter") generate();
       });
       $("copy").addEventListener("click", () => navigator.clipboard.writeText(codeEl.textContent));
+
+      const modeSel = document.getElementById("mode");
+      const placeholders = {
+        generate: "e.g. plot a 20-period EMA, colored green when price is above it",
+        scan: "e.g. stocks where price crossed above the 50-day moving average today",
+        explain: "paste the ThinkScript you want explained",
+        debug: "paste the broken ThinkScript to fix",
+        refactor: "paste the ThinkScript to clean up",
+      };
+      modeSel.addEventListener("change", () => {
+        intent.placeholder = placeholders[modeSel.value] || "";
+      });
     </script>
   </body>
 </html>

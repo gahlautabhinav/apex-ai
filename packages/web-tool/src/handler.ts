@@ -1,11 +1,20 @@
-import { generateThinkScript, type LlmClient } from "@apex/ai-thinkscript";
+import {
+  generateThinkScript,
+  debugThinkScript,
+  refactorThinkScript,
+  generateScanner,
+  explainThinkScript,
+  type LlmClient,
+} from "@apex/ai-thinkscript";
 
 export interface HandlerResult {
   status: number;
   body: unknown;
 }
 
-const MAX_INTENT = 2000;
+const MAX_INPUT = 2000;
+const MODES = ["generate", "explain", "debug", "refactor", "scan"] as const;
+type Mode = (typeof MODES)[number];
 
 export async function handleGenerate(rawBody: string, client: LlmClient): Promise<HandlerResult> {
   let parsed: unknown;
@@ -14,21 +23,57 @@ export async function handleGenerate(rawBody: string, client: LlmClient): Promis
   } catch {
     return { status: 400, body: { error: "request body must be JSON" } };
   }
-  const intent =
-    parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
-      ? (parsed as Record<string, unknown>).intent
-      : undefined;
-  if (typeof intent !== "string" || intent.trim() === "") {
-    return { status: 400, body: { error: "field 'intent' (a non-empty string) is required" } };
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return { status: 400, body: { error: "request body must be a JSON object" } };
   }
-  if (intent.length > MAX_INTENT) {
-    return { status: 400, body: { error: `intent too long (max ${MAX_INTENT} characters)` } };
+  const obj = parsed as Record<string, unknown>;
+
+  // Accept `input` (current) or `intent` (legacy generate).
+  const input =
+    typeof obj.input === "string" ? obj.input : typeof obj.intent === "string" ? obj.intent : undefined;
+  if (typeof input !== "string" || input.trim() === "") {
+    return { status: 400, body: { error: "field 'input' (a non-empty string) is required" } };
+  }
+  if (input.length > MAX_INPUT) {
+    return { status: 400, body: { error: `input too long (max ${MAX_INPUT} characters)` } };
   }
 
-  const r = await generateThinkScript(intent, client);
+  const mode: Mode = (MODES as readonly string[]).includes(obj.mode as string)
+    ? (obj.mode as Mode)
+    : "generate";
+  const error = typeof obj.error === "string" ? obj.error : undefined;
+  const goal = typeof obj.goal === "string" ? obj.goal : undefined;
+
+  if (mode === "explain") {
+    const r = await explainThinkScript(input, client);
+    return {
+      status: 200,
+      body: {
+        mode,
+        code: "",
+        explanation: r.explanation,
+        producedCode: false,
+        ok: true,
+        attempts: 1,
+        reviewRequired: true,
+        errors: [],
+      },
+    };
+  }
+
+  const r =
+    mode === "debug"
+      ? await debugThinkScript(input, client, { error })
+      : mode === "refactor"
+        ? await refactorThinkScript(input, client, { goal })
+        : mode === "scan"
+          ? await generateScanner(input, client)
+          : await generateThinkScript(input, client);
+
   return {
     status: 200,
     body: {
+      mode,
       code: r.code,
       explanation: r.explanation,
       producedCode: r.producedCode,
