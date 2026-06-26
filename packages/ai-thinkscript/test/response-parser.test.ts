@@ -30,4 +30,9 @@ describe("parseResponse", () => {
     const text = "```thinkscript\ninput length = 20;\nplot SMA = Average(close, length);\n```";
     expect(parseResponse(text).code).toBe("input length = 20;\nplot SMA = Average(close, length);");
   });
+
+  it("reports whether a fence was found", () => {
+    expect(parseResponse("```thinkscript\nplot X = close;\n```").hadFence).toBe(true);
+    expect(parseResponse("just prose, no fence").hadFence).toBe(false);
+  });
 });

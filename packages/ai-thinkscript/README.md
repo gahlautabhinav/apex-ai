@@ -19,6 +19,7 @@ result.explanation;    // plain-English explanation
 result.validation.ok;  // passed static validation (no error-severity diagnostics)
 result.attempts;       // model calls made (1 + self-correction retries)
 result.reviewRequired; // always true — never present generated code as verified
+result.producedCode;   // a non-empty code block was returned — check this before trusting validation.ok
 ```
 
 ## Pieces
