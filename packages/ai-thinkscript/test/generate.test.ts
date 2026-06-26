@@ -59,6 +59,34 @@ describe("generateThinkScript", () => {
     expect(r.attempts).toBe(1);
     expect(client.calls.length).toBe(1);
   });
+
+  it("snapshots each call's messages at send time (no reference aliasing)", async () => {
+    const client = new FakeLlmClient([BROKEN, GOOD]);
+    await generateThinkScript("x", client);
+    expect(client.calls[0].messages.length).toBe(1);
+    expect(client.calls[1].messages.length).toBe(3);
+  });
+
+  it("sets producedCode true on a valid generation", async () => {
+    const client = new FakeLlmClient([GOOD]);
+    const r = await generateThinkScript("x", client);
+    expect(r.producedCode).toBe(true);
+  });
+
+  it("does not accept a fence-less reply (e.g. a refusal) as produced code", async () => {
+    const client = new FakeLlmClient(["I can't provide buy or sell signals."]);
+    const r = await generateThinkScript("x", client, { maxAttempts: 2 });
+    expect(r.producedCode).toBe(false);
+    expect(r.attempts).toBe(2); // kept retrying instead of accepting non-code
+    expect(client.calls[1].messages[2].content.toLowerCase()).toContain("code block");
+  });
+
+  it("does not accept empty output as produced code", async () => {
+    const client = new FakeLlmClient([""]);
+    const r = await generateThinkScript("x", client, { maxAttempts: 2 });
+    expect(r.producedCode).toBe(false);
+    expect(r.attempts).toBe(2);
+  });
 });
 
 describe("correctionPrompt", () => {

@@ -1,6 +1,7 @@
 export interface ParsedResponse {
   code: string;
   explanation: string;
+  hadFence: boolean; // true if a fenced code block was found in the response
 }
 
 // First fenced block: ``` optionally followed by a language tag on the same
@@ -10,11 +11,11 @@ const FENCE = /```[^\n]*\n([\s\S]*?)```/;
 export function parseResponse(text: string): ParsedResponse {
   const match = text.match(FENCE);
   if (!match || match.index === undefined) {
-    return { code: text.trim(), explanation: "" };
+    return { code: text.trim(), explanation: "", hadFence: false };
   }
   const code = match[1].trim();
   const before = text.slice(0, match.index);
   const after = text.slice(match.index + match[0].length);
   const explanation = (before + after).trim();
-  return { code, explanation };
+  return { code, explanation, hadFence: true };
 }
