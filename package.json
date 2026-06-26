@@ -9,6 +9,7 @@
     "typecheck": "tsc -p packages/thinkscript-validator/tsconfig.json --noEmit"
   },
   "devDependencies": {
+    "tsx": "^4.19.0",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
   }
