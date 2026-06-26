@@ -1,0 +1,4 @@
+# Scanner: price above a rising 20-period EMA
+input length = 20;
+def ema = ExpAverage(close, length);
+plot scan = close > ema and ema > ema[1];

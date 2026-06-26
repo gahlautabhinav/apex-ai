@@ -1,0 +1,20 @@
+{
+  "valid": [
+    "valid/sma.tsc",
+    "valid/ema-cross.tsc",
+    "valid/rsi-lower.tsc",
+    "valid/volume-color.tsc",
+    "valid/vwap-plot.tsc",
+    "valid/highest-channel.tsc",
+    "valid/atr-label.tsc",
+    "valid/scanner-cross.tsc"
+  ],
+  "invalid": [
+    { "file": "invalid/unbalanced-paren.tsc", "expect": "TS001" },
+    { "file": "invalid/mismatched-bracket.tsc", "expect": "TS001" },
+    { "file": "invalid/curly-brace.tsc", "expect": "TS002" },
+    { "file": "invalid/unterminated-string.tsc", "expect": "TS003" },
+    { "file": "invalid/reserved-name.tsc", "expect": "TS004" },
+    { "file": "invalid/empty-target.tsc", "expect": "TS005" }
+  ]
+}

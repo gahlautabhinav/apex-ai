@@ -1,0 +1,5 @@
+input length = 20;
+def avgVol = Average(volume, length);
+plot Vol = volume;
+Vol.AssignValueColor(if volume > avgVol then Color.GREEN else Color.GRAY);
+Vol.SetPaintingStrategy(PaintingStrategy.HISTOGRAM);

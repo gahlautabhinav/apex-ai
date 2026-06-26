@@ -1,0 +1,4 @@
+# Simple moving average study
+input length = 20;
+plot SMA = Average(close, length);
+SMA.SetDefaultColor(Color.CYAN);
