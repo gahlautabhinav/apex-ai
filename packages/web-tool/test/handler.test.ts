@@ -41,4 +41,14 @@ describe("handleGenerate", () => {
     const res = await handleGenerate(JSON.stringify({ intent: long }), new FakeLlmClient([GOOD]));
     expect(res.status).toBe(400);
   });
+
+  it("returns 400 for a bare null JSON body", async () => {
+    const res = await handleGenerate("null", new FakeLlmClient([GOOD]));
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 for a JSON array body", async () => {
+    const res = await handleGenerate("[1,2,3]", new FakeLlmClient([GOOD]));
+    expect(res.status).toBe(400);
+  });
 });

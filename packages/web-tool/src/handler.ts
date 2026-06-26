@@ -14,7 +14,10 @@ export async function handleGenerate(rawBody: string, client: LlmClient): Promis
   } catch {
     return { status: 400, body: { error: "request body must be JSON" } };
   }
-  const intent = (parsed as { intent?: unknown }).intent;
+  const intent =
+    parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)
+      ? (parsed as Record<string, unknown>).intent
+      : undefined;
   if (typeof intent !== "string" || intent.trim() === "") {
     return { status: 400, body: { error: "field 'intent' (a non-empty string) is required" } };
   }
