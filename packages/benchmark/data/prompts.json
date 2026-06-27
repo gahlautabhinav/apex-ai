@@ -1,0 +1,39 @@
+[
+  { "id": "ma-sma20", "category": "moving-average", "mode": "generate", "prompt": "Plot a 20-period simple moving average of the close.", "expect": ["plot", "Average", "close", "20"] },
+  { "id": "ma-ema9", "category": "moving-average", "mode": "generate", "prompt": "Plot a 9-period exponential moving average of the close, colored cyan.", "expect": ["ExpAverage", "close", "9"] },
+  { "id": "ma-cross", "category": "moving-average", "mode": "generate", "prompt": "Plot a 9 EMA and a 21 EMA, and signal where the 9 crosses above the 21.", "expect": ["ExpAverage", "9", "21"] },
+  { "id": "ma-hull", "category": "moving-average", "mode": "generate", "prompt": "Plot a 50-period Hull moving average of the close.", "expect": ["hull", "50"] },
+  { "id": "ma-vwap", "category": "moving-average", "mode": "generate", "prompt": "Plot the VWAP for the current session.", "expect": ["vwap"] },
+  { "id": "ma-doublema", "category": "moving-average", "mode": "generate", "prompt": "Plot a fast 10-period and a slow 30-period simple moving average of close.", "expect": ["Average", "10", "30"] },
+
+  { "id": "osc-rsi", "category": "oscillator", "mode": "generate", "prompt": "Create a lower study plotting RSI with length 14 and horizontal lines at 70 and 30.", "expect": ["RSI", "70", "30"] },
+  { "id": "osc-macd", "category": "oscillator", "mode": "generate", "prompt": "Plot the MACD with 12, 26, 9 settings as a lower study.", "expect": ["MACD", "12", "26", "9"] },
+  { "id": "osc-stoch", "category": "oscillator", "mode": "generate", "prompt": "Plot a stochastic oscillator with length 14 as a lower study with 80 and 20 reference lines.", "expect": ["14", "80", "20"] },
+  { "id": "osc-cci", "category": "oscillator", "mode": "generate", "prompt": "Plot the CCI with length 20 as a lower study.", "expect": ["CCI", "20"] },
+  { "id": "osc-williams", "category": "oscillator", "mode": "generate", "prompt": "Plot Williams %R with length 14 as a lower study.", "expect": ["william", "14"] },
+  { "id": "osc-momentum", "category": "oscillator", "mode": "generate", "prompt": "Plot a 10-period momentum oscillator of the close as a lower study.", "expect": ["10", "close"] },
+
+  { "id": "vol-bollinger", "category": "volatility", "mode": "generate", "prompt": "Plot Bollinger Bands with a 20-period basis and 2 standard deviations.", "expect": ["Average", "std", "20", "2"] },
+  { "id": "vol-atr", "category": "volatility", "mode": "generate", "prompt": "Plot the Average True Range with length 14 as a lower study.", "expect": ["ATR", "14"] },
+  { "id": "vol-keltner", "category": "volatility", "mode": "generate", "prompt": "Plot Keltner Channels with a 20-period basis and a 2x ATR multiplier.", "expect": ["20", "ATR"] },
+  { "id": "vol-stddev", "category": "volatility", "mode": "generate", "prompt": "Plot the 20-period standard deviation of the close.", "expect": ["std", "close", "20"] },
+  { "id": "vol-highlow", "category": "volatility", "mode": "generate", "prompt": "Plot the highest high and the lowest low over the last 20 bars.", "expect": ["Highest", "Lowest", "20"] },
+
+  { "id": "volm-color", "category": "volume", "mode": "generate", "prompt": "Plot volume as a histogram, colored green when above its 20-period average and gray otherwise.", "expect": ["volume", "Average", "20"] },
+  { "id": "volm-relvol", "category": "volume", "mode": "generate", "prompt": "Plot relative volume: the current volume divided by the 20-day average volume.", "expect": ["volume", "Average", "20"] },
+  { "id": "volm-vwapband", "category": "volume", "mode": "generate", "prompt": "Plot VWAP and color the price bars green when the close is above VWAP.", "expect": ["vwap", "close"] },
+  { "id": "volm-obv", "category": "volume", "mode": "generate", "prompt": "Plot On Balance Volume as a lower study.", "expect": ["volume"] },
+
+  { "id": "scan-emacross", "category": "scanner", "mode": "scan", "prompt": "Find stocks where the 9 EMA crossed above the 21 EMA today.", "expect": ["plot scan", "ExpAverage", "9", "21"] },
+  { "id": "scan-rsioversold", "category": "scanner", "mode": "scan", "prompt": "Scan for stocks with RSI below 30.", "expect": ["plot scan", "RSI", "30"] },
+  { "id": "scan-breakout", "category": "scanner", "mode": "scan", "prompt": "Scan for stocks where the close is above the highest high of the prior 20 bars.", "expect": ["plot scan", "Highest", "20"] },
+  { "id": "scan-abovema", "category": "scanner", "mode": "scan", "prompt": "Scan for stocks trading above their 200-day simple moving average.", "expect": ["plot scan", "Average", "200"] },
+  { "id": "scan-relvol", "category": "scanner", "mode": "scan", "prompt": "Scan for stocks whose volume today is at least 2 times their 20-day average volume.", "expect": ["plot scan", "volume", "Average", "20"] },
+  { "id": "scan-macdcross", "category": "scanner", "mode": "scan", "prompt": "Scan for stocks where the MACD line crossed above its signal line.", "expect": ["plot scan", "MACD"] },
+  { "id": "scan-gap", "category": "scanner", "mode": "scan", "prompt": "Scan for stocks that gapped up at least 2 percent at the open versus the prior day's close.", "expect": ["plot scan", "open", "close"] },
+
+  { "id": "misc-rsilabel", "category": "misc", "mode": "generate", "prompt": "Add a chart label that shows the current RSI(14) value.", "expect": ["AddLabel", "RSI"] },
+  { "id": "misc-colorbars", "category": "misc", "mode": "generate", "prompt": "Color the price bars green when the close is above the 20 EMA and red when below.", "expect": ["ExpAverage", "20", "close"] },
+  { "id": "misc-alert", "category": "misc", "mode": "generate", "prompt": "Create an alert that fires when the close crosses above the 50-period simple moving average.", "expect": ["Alert", "Average", "50"] },
+  { "id": "misc-prevday", "category": "misc", "mode": "generate", "prompt": "Plot the previous day's high and low as horizontal lines on an intraday chart.", "expect": ["high", "low"] }
+]
