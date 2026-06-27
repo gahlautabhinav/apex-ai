@@ -13,10 +13,10 @@
   { "id": "osc-williams", "category": "oscillator", "mode": "generate", "prompt": "Plot Williams %R with length 14 as a lower study.", "expect": ["william", "14"] },
   { "id": "osc-momentum", "category": "oscillator", "mode": "generate", "prompt": "Plot a 10-period momentum oscillator of the close as a lower study.", "expect": ["10", "close"] },
 
-  { "id": "vol-bollinger", "category": "volatility", "mode": "generate", "prompt": "Plot Bollinger Bands with a 20-period basis and 2 standard deviations.", "expect": ["Average", "StDev", "20", "2"] },
+  { "id": "vol-bollinger", "category": "volatility", "mode": "generate", "prompt": "Plot Bollinger Bands with a 20-period basis and 2 standard deviations.", "expect": ["Average", "std", "20", "2"] },
   { "id": "vol-atr", "category": "volatility", "mode": "generate", "prompt": "Plot the Average True Range with length 14 as a lower study.", "expect": ["ATR", "14"] },
   { "id": "vol-keltner", "category": "volatility", "mode": "generate", "prompt": "Plot Keltner Channels with a 20-period basis and a 2x ATR multiplier.", "expect": ["20", "ATR"] },
-  { "id": "vol-stddev", "category": "volatility", "mode": "generate", "prompt": "Plot the 20-period standard deviation of the close.", "expect": ["StDev", "close", "20"] },
+  { "id": "vol-stddev", "category": "volatility", "mode": "generate", "prompt": "Plot the 20-period standard deviation of the close.", "expect": ["std", "close", "20"] },
   { "id": "vol-highlow", "category": "volatility", "mode": "generate", "prompt": "Plot the highest high and the lowest low over the last 20 bars.", "expect": ["Highest", "Lowest", "20"] },
 
   { "id": "volm-color", "category": "volume", "mode": "generate", "prompt": "Plot volume as a histogram, colored green when above its 20-period average and gray otherwise.", "expect": ["volume", "Average", "20"] },
